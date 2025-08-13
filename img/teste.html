@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NovaDados</title>
+  <style>
+    :root{
+      /* Paleta diferente da original */
+      --bg: #0b0a12;             /* fundo principal bem escuro */
+      --card: #11111a;           /* cartões */
+      --muted: #8b8ca3;          /* textos secundários */
+      --text: #e9ebf1;           /* texto principal */
+      --brand: #6ee7f3;          /* ciano claro */
+      --brand-2: #a78bfa;        /* roxo suave */
+      --accent: #22d3ee;         /* ciano vívido */
+      --ring: rgba(174, 115, 255, .5);
+      --ok: #22c55e;             /* verde */
+      --warn: #f59e0b;           /* amarelo */
+      --err: #ef4444;            /* vermelho */
+      --container: 1200px;       /* largura máxima */
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+      --shadow-2: 0 30px 80px rgba(34, 211, 238, .12);
+      --gradient: radial-gradient(80% 60% at 20% 10%, rgba(167,139,250,.25) 0%, rgba(167,139,250,0) 60%),
+                  radial-gradient(70% 50% at 80% 20%, rgba(110,231,243,.25) 0%, rgba(110,231,243,0) 60%),
+                  linear-gradient(180deg, rgba(15,23,42,.0) 0%, rgba(15,23,42,.6) 100%);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      color:var(--text); background:var(--bg);
+      line-height:1.5; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    .container{max-width:var(--container); margin-inline:auto; padding-inline:clamp(16px,3vw,28px)}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:#121225; color:#b5b7d3; border:1px solid #1f2240}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; border-radius:12px; border:1px solid #2a2f55; background:linear-gradient(180deg, #1b1f3a 0%, #141833 100%); color:#e9ebf1; font-weight:600; transition:.25s ease; box-shadow: var(--shadow-2)}
+    .btn:hover{transform:translateY(-2px); border-color:#38407a}
+    .btn.prime{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0b0a12; box-shadow:0 12px 30px rgba(110,231,243,.25)}
+    .btn.ghost{background:transparent; border-color:#2a2f55}
+
+    /* NAV */
+    .nav{position:sticky; top:0; z-index:50; backdrop-filter:saturate(140%) blur(8px); background:rgba(11,10,18,.6); border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, var(--brand-2), var(--accent)); display:grid; place-items:center; box-shadow:0 6px 18px rgba(167,139,250,.35)}
+    .logo svg{width:22px; height:22px}
+    .nav-links{display:flex; gap:18px}
+    .nav-links a{opacity:.85}
+    .nav-cta{display:flex; gap:10px; align-items:center}
+    .menu-btn{display:none}
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: clamp(48px, 8vw, 120px) 0 64px;
+      border-radius: var(--radius-xl);
+      color: var(--text);
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--gradient);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-xl);
+      background: var(--gradient);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding-inline: clamp(16px, 3vw, 28px);
+      box-sizing: border-box;
+    }
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .kicker{font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:#b5b7d3}
+    .title{font-size:clamp(28px, 5vw, 54px); line-height:1.05; font-weight:800; margin:10px 0 12px}
+    .subtitle{font-size:clamp(14px, 1.6vw, 18px); color:var(--muted); max-width:62ch}
+    .hero-cta{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap}
+    .metrics{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:28px}
+    .metric{background:var(--card); border:1px solid #1a1a2e; padding:16px; border-radius:var(--radius-lg); box-shadow:var(--shadow-1)}
+    .metric strong{font-size:clamp(18px, 3.2vw, 28px)}
+
+    .hero-card{position:relative; border-radius:var(--radius-xl); padding:20px; background:linear-gradient(180deg,#0f132b,#0c1022); border:1px solid #1e2449; box-shadow:0 20px 80px rgba(0,0,0,.45)}
+    .hero-card .bar{height:8px; border-radius:8px; background:linear-gradient(90deg, var(--brand-2), var(--accent)); box-shadow:0 8px 24px rgba(34,211,238,.35); margin-bottom:12px}
+
+    /* TRUST */
+    .trust{padding:28px 0 10px; color:#aeb0c8}
+    .trust .row{display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:center}
+    .trust .row img{height:26px; opacity:.75; filter:grayscale(1)}
+
+    /* FEATURES */
+    .section{padding: clamp(48px, 7vw, 100px) 0}
+    .section .head{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:24px}
+    .section h2{font-size:clamp(22px, 3.4vw, 38px); margin:0}
+    .lead{color:var(--muted); max-width:70ch}
+
+    .features{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+    .feature{background:var(--card); border:1px solid #1b1e3a; border-radius:var(--radius-lg); padding:18px; transition:.25s ease; box-shadow:var(--shadow-1); position:relative; overflow:hidden}
+    .feature:hover{transform:translateY(-3px); border-color:#2a2f55}
+    .feature .icon{width:38px; height:38px; border-radius:10px; display:grid; place-items:center; background:linear-gradient(135deg, rgba(110,231,243,.15), rgba(167,139,250,.15)); border:1px solid #2a2f55; margin-bottom:10px}
+    .feature h3{margin:6px 0 6px; font-size:18px}
+    .feature p{color:var(--muted); font-size:14px}
+
+    /* PRODUCTS/CARDS */
+    .cards{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+    .card{background:linear-gradient(180deg,#0f132b,#0c1022); border:1px solid #1e2449; border-radius:var(--radius-xl); padding:18px; box-shadow:var(--shadow-1)}
+    .card .tag{display:inline-block; padding:4px 10px; font-size:12px; border:1px solid #2a2f55; border-radius:999px; color:#c3c7e8}
+    .card h3{margin:10px 0 6px}
+    .card p{color:var(--muted); font-size:14px}
+
+    /* PRICING */
+    .pricing{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+    .plan {
+      background: var(--card);
+      border: 1px solid #1b1e3a;
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      position: relative;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+      cursor: pointer;
+    }
+    .plan:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .plan.popular {
+      border: 1px solid #1b1e3a;
+      box-shadow: 0 20px 80px rgba(34,211,238,.15);
+    }
+    .plan.popular:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .pill{display:inline-block; padding:2px 10px; border-radius:999px; border:1px solid #2a2f55; color:#c3c7e8; font-size:12px}
+    .price{font-size:36px; font-weight:800}
+    .price small{font-size:14px; color:var(--muted)}
+    .ul{margin:14px 0 0; padding:0; list-style:none; color:#c6c8dc}
+    .ul li{display:flex; align-items:flex-start; gap:10px; margin:10px 0}
+    .ul svg{flex:0 0 18px; margin-top:2px}
+
+    /* FAQ */
+    .faq{max-width:900px; margin-inline:auto}
+    .accordion{border:1px solid #1b1e3a; border-radius:var(--radius-lg); overflow:hidden}
+    .item + .item{border-top:1px solid #1b1e3a}
+    .q{width:100%; text-align:left; background:#0f1228; color:#e9ebf1; border:0; padding:18px; font-weight:600; display:flex; justify-content:space-between; align-items:center; cursor:pointer}
+    .a{padding:0 18px 16px; color:var(--muted); display:none}
+    .item.open .a{display:block}
+
+    /* CONTACT */
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .grid-2 > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #1b1e3a;
+      background: #0f1228;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--brand-2);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Alinha o checkbox e o botão na mesma linha, com espaçamento */
+    .grid-2 > div:last-child {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Estiliza o botão dentro do último grid-2 */
+    .grid-2 > div:last-child button {
+      padding: 12px 24px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 1024px){
+      .hero-grid{grid-template-columns:1fr;}
+      .metrics{grid-template-columns:1fr 1fr}
+      .features, .cards, .pricing{grid-template-columns:1fr 1fr}
+      .foot{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 680px){
+      .nav-links, .nav-cta{display:none}
+      .menu-btn{display:inline-flex}
+      .metrics{grid-template-columns:1fr}
+      .features, .cards, .pricing{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
+      .only-desktop{display:none}
+      .only-mobile{display:initial}
+      .grid-2 > div:last-child {justify-content: flex-start;}
+    }
+
+    /* TO TOP */
+    #toTop {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      opacity: 0;
+      pointer-events: none;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Menu principal">
+    <div class="container nav-inner">
+      <a href="#inicio" class="brand" aria-label="NovaDados">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>NovaDados</h1>
+      </a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="menu-mobile" aria-label="Abrir menu">☰</button>
+      <div class="nav-links" id="menu-mobile">
+        <a href="#solucoes">Soluções</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contato">Contato</a>
+      </div>
+      <div class="nav-cta">
+        <a href="#login" class="btn ghost">Entrar</a>
+        <a href="#teste-gratis" class="btn prime">Teste grátis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio" role="region" aria-label="Apresentação principal">
+    <div class="hero-grid container">
+      <div>
+        <div class="kicker">Soluções em dados</div>
+        <h2 class="title">Decisões inteligentes começam com dados confiáveis</h2>
+        <p class="subtitle">Impulsione seu negócio com análises precisas e insights personalizados para sua empresa.</p>
+        <div class="hero-cta">
+          <a href="#planos" class="btn prime">Conheça nossos planos</a>
+          <a href="#contato" class="btn ghost">Fale conosco</a>
+        </div>
+        <div class="metrics" aria-label="Principais métricas">
+          <div class="metric" role="group" aria-labelledby="metric1">
+            <strong id="metric1">98%</strong>
+            <div>Precisão na análise de dados</div>
+          </div>
+          <div class="metric" role="group" aria-labelledby="metric2">
+            <strong id="metric2">+120</strong>
+            <div>Empresas atendidas</div>
+          </div>
+          <div class="metric" role="group" aria-labelledby="metric3">
+            <strong id="metric3">24h</strong>
+            <div>Suporte dedicado</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="hero-card" aria-label="Imagem representativa">
+          <!-- Exemplo de gráfico ou imagem -->
+          <img src="https://via.placeholder.com/400x300?text=Gráfico" alt="Gráfico ilustrativo de dados" />
+          <div class="bar" style="width: 75%;"></div>
+          <div class="bar" style="width: 50%;"></div>
+          <div class="bar" style="width: 25%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS (PRICING) -->
+  <section class="pricing container" id="planos" aria-label="Planos disponíveis">
+    <article class="plan" tabindex="0" aria-label="Plano básico">
+      <div class="pill">Básico</div>
+      <div class="price">R$49 <small>/mês</small></div>
+      <ul class="ul" aria-label="Características do plano básico">
+        <li>Até 10 projetos</li>
+        <li>Relatórios mensais</li>
+        <li>Suporte por email</li>
+      </ul>
+      <button class="btn prime" aria-label="Selecionar plano básico">Selecionar</button>
+    </article>
+    <article class="plan popular" tabindex="0" aria-label="Plano profissional">
+      <div class="pill">Profissional</div>
+      <div class="price">R$99 <small>/mês</small></div>
+      <ul class="ul" aria-label="Características do plano profissional">
+        <li>Até 50 projetos</li>
+        <li>Relatórios semanais</li>
+        <li>Suporte prioritário</li>
+      </ul>
+      <button class="btn prime" aria-label="Selecionar plano profissional">Selecionar</button>
+    </article>
+    <article class="plan" tabindex="0" aria-label="Plano empresarial">
+      <div class="pill">Empresarial</div>
+      <div class="price">R$199 <small>/mês</small></div>
+      <ul class="ul" aria-label="Características do plano empresarial">
+        <li>Projetos ilimitados</li>
+        <li>Relatórios diários</li>
+        <li>Suporte 24h</li>
+      </ul>
+      <button class="btn prime" aria-label="Selecionar plano empresarial">Selecionar</button>
+    </article>
+  </section>
+
+  <!-- FORMULÁRIO DE CONTATO -->
+  <section id="contato" class="section container" aria-label="Formulário de contato">
+    <h2 class="head">Fale conosco</h2>
+    <form>
+      <div class="grid-2">
+        <div>
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" name="nome" required />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label for="telefone">Telefone</label>
+          <input type="tel" id="telefone" name="telefone" />
+        </div>
+        <div>
+          <label for="assunto">Assunto</label>
+          <select id="assunto" name="assunto" required>
+            <option value="">Selecione</option>
+            <option value="planos">Planos</option>
+            <option value="suporte">Suporte</option>
+            <option value="outros">Outros</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="mensagem">Mensagem</label>
+        <textarea id="mensagem" name="mensagem" required></textarea>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label><input type="checkbox" required /> Aceito os termos</label>
+        </div>
+        <div>
+          <button type="submit" class="btn prime">Enviar</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</body>
+</html>
