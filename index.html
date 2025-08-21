@@ -213,8 +213,8 @@ footer a{color:#e2e8f0;}
 
     <!-- Abas -->
     <div class="tabs">
-      <button class="tab" data-target="cp">VEICULAR</button>
-      <button class="tab active" data-target="pf">CREDITO SE</button>
+      <button class="tab active" data-target="cp">VEICULAR</button>
+      <button class="tab" data-target="pf">CREDITO SE</button>
       <button class="tab" data-target="pj">CADASTRAL</button>
     </div>
 
@@ -594,28 +594,38 @@ const pfCards = document.querySelectorAll('.card.pf');
 const pjCards = document.querySelectorAll('.card.pj');
 const cpCards = document.querySelectorAll('.card.cp');
 
-// Função para mostrar apenas os cards da aba ativa
-function showActiveCards() {
-  const activeTab = document.querySelector('.tab.active');
-  const target = activeTab ? activeTab.dataset.target : 'pf'; // padrão pf se nada estiver ativo
-
-  pfCards.forEach(c => c.style.display = (target === 'pf') ? 'block' : 'none');
-  pjCards.forEach(c => c.style.display = (target === 'pj') ? 'block' : 'none');
-  cpCards.forEach(c => c.style.display = (target === 'cp') ? 'block' : 'none');
+function showCards(target){
+  if(target === 'pf') {
+    pfCards.forEach(c => c.style.display = 'block');
+    pjCards.forEach(c => c.style.display = 'none');
+    cpCards.forEach(c => c.style.display = 'none');
+  }
+  else if(target === 'pj') {
+    pfCards.forEach(c => c.style.display = 'none');
+    pjCards.forEach(c => c.style.display = 'block');
+    cpCards.forEach(c => c.style.display = 'none');
+  }
+  else if(target === 'cp') {
+    pfCards.forEach(c => c.style.display = 'none');
+    pjCards.forEach(c => c.style.display = 'none');
+    cpCards.forEach(c => c.style.display = 'block');
+  }
 }
 
-// Executa ao carregar a página
-document.addEventListener('DOMContentLoaded', showActiveCards);
-
+// Ao clicar na aba
 tabs.forEach(tab => {
   tab.addEventListener('click', () => {
-    // Remove active de todas as abas e adiciona na clicada
     tabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-
-    // Atualiza os cards conforme a aba clicada
-    showActiveCards();
+    showCards(tab.dataset.target);
   });
+});
+
+// Inicializar página com aba ativa
+document.addEventListener('DOMContentLoaded', () => {
+  const activeTab = document.querySelector('.tab.active');
+  if(activeTab) showCards(activeTab.dataset.target);
+  else showCards('pf'); // fallback caso nenhuma esteja ativa
 });
 
 // ===== FAQ =====
@@ -627,6 +637,8 @@ items.forEach(item => {
   });
 });
 </script>
+
+
 </body>
 </html>
 
